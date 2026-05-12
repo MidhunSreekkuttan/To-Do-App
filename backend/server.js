@@ -3,6 +3,7 @@ import dotenv from 'dotenv/config'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import dataBase from './data-base/connectBD.js'
+import userRouter from './routes/userRoute.js'
 
 const app = express()
 
@@ -14,6 +15,7 @@ app.use(cors())
 app.use(cookieParser())
 
 //api end-points
+app.use("/api/user", userRouter) //user routes
 
 await dataBase()
 
