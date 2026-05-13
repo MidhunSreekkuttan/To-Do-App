@@ -4,6 +4,10 @@ import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import dataBase from './data-base/connectBD.js'
 import userRouter from './routes/userRoute.js'
+import taskRouter from './routes/taskRoute.js'
+import dns from "dns"
+
+dns.setServers(["1.1.1.1", "8.8.8.8"]);
 
 const app = express()
 
@@ -16,6 +20,7 @@ app.use(cookieParser())
 
 //api end-points
 app.use("/api/user", userRouter) //user routes
+app.use("/api/task", taskRouter) //task routes
 
 await dataBase()
 
