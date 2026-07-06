@@ -71,34 +71,9 @@ export const login = async (req, res) => {
             return res.json({ success: false, message: "Incorrect password" })
         }
 
-        const token = await jwt.sign({ id: user._id }, process.env.JWT_SECRET)
-
-        res.cookie("UserLogin", token, {
-            httpOnly: true
-        })
+        await jwt.sign({ id: user._id.toString() }, process.env.JWT_SECRET)
 
         res.json({ success: true, message: "User LoggedIn" })
-
-    } catch (error) {
-        res.json({ success: false, message: error.message })
-        console.log(error);
-    }
-
-}
-
-export const logout = async (req, res) => {
-
-    try {
-
-        const userId = req.userId
-
-        await UserModel.findById(userId)
-
-        res.clearCookie("UserLogin", {
-            httpOnly: true
-        })
-
-        return res.json({ success: true, message: "User LoggedOut" })
 
     } catch (error) {
         res.json({ success: false, message: error.message })
@@ -113,18 +88,12 @@ export const getUserData = async (req, res) => {
 
         const userId = req.userId
 
-        const user = await UserModel.findById(userId)
+        const user = await UserModel.findById(userId).select("-password")
         if (!user) {
             return res.json({ success: false, message: "user not found" })
         }
 
-        res.json({
-            success: true, userData: {
-                id: user._id,
-                name: user.name,
-                email: user.email
-            }
-        })
+        res.json({ success: true, user })
 
     } catch (error) {
         res.json({ success: false, message: error.message })

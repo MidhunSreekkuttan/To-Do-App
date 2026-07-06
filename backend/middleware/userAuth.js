@@ -4,17 +4,17 @@ const userAuth = async (req, res, next) => {
 
     try {
 
-        const { UserLogin } = req.cookies
-        if (!UserLogin) {
+        const loginToken = req.headers.authorization
+        if (!loginToken) {
             return res.json({ success: false, message: "Something went wrong plz login again" })
         }
 
-        const verifyToken = await jwt.verify(UserLogin, process.env.JWT_SECRET)
-        if (!verifyToken) {
+        const decodeToken = jwt.decode(loginToken, process.env.JWT_SECRET)
+        if (!decodeToken) {
             return res.json({ success: false, message: "Access denide" })
         } else {
-            if (verifyToken.id) {
-                req.userId = verifyToken.id
+            if (decodeToken.id) {
+                req.userId = decodeToken.id
             }
         }
 
