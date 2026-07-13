@@ -1,8 +1,14 @@
-import React from 'react'
+import { Toaster } from "react-hot-toast"
+import Sidebar from "./components/Sidebar"
 
 const App = () => {
   return (
-    <div>App</div>
+    <>
+      <Toaster />
+
+      <Sidebar />
+      
+    </>
   )
 }
 
