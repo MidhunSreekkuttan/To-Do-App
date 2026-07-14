@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { toast } from 'react-hot-toast'
+import { LabelField } from "../lib/bottons";
 
 const CreateTask = ({ onFormClose }) => {
 
@@ -78,25 +79,24 @@ const CreateTask = ({ onFormClose }) => {
         {/* --- FORM --- */}
         <form onSubmit={handleSubmit} className="flex flex-col gap-6">
 
-          <label className="flex flex-col gap-2 text-sm font-semibold text-gray-700">
-            Task Title
-            <input
-              ref={taskRef}
-              className="w-full text-base py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 border
-                 border-gray-400 rounded-lg"
-              type="text"
-              placeholder="e.g., Send team meeting agenda"
-              name="title"
-              value={formData.title}
-              onChange={handleChange}
-              onKeyDown={e => {
-                if (e.key === "Enter") {
-                  e.preventDefault()
-                  dateRef.current.focus()
-                }
-              }}
-            />
-          </label>
+          <LabelField
+            text="Task Title"
+            ref={taskRef}
+            type="text"
+            textColor="text-gray-700"
+            textSize="text-sm"
+            otherCss="focus:ring-blue-500 border border-gray-400"
+            placeholder="e.g., Send team meeting agenda"
+            name="title"
+            value={formData.title}
+            onChange={handleChange}
+            onKeyDown={e => {
+              if (e.key === "Enter") {
+                e.preventDefault()
+                dateRef.current.focus()
+              }
+            }}
+          />
 
           {/* Due Date & Time */}
           <div className="flex justify-between gap-4">
@@ -142,19 +142,19 @@ const CreateTask = ({ onFormClose }) => {
             </label>
           </div>
 
-          <label className="flex flex-col gap-2 text-sm font-semibold text-gray-700">
-            Notes/Description
-            <textarea
-              ref={descriptionRef}
-              rows={4}
-              className="w-full text-base py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 border
-                 border-gray-400 rounded-lg resize-none"
-              placeholder="Add any extra details here..."
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-            />
-          </label>
+          <LabelField
+            text="Notes/Description"
+            type="textarea"
+            textColor="text-gray-700"
+            textSize="text-sm"
+            otherCss="focus:ring-blue-500 border border-gray-400 resize-none"
+            ref={descriptionRef}
+            rows={4}
+            placeholder="Add any extra details here..."
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
+          />
 
           <button
             type="submit"
