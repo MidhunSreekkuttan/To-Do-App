@@ -1,5 +1,8 @@
-import { useState } from "react"
+import { useState, useRef, useEffect } from "react"
 import { LabelField } from "../lib/bottons"
+import axios from 'axios'
+import axiosInstance from "../lib/AxiosInstance"
+import { toast } from 'react-hot-toast'
 
 const Login = () => {
 
@@ -9,6 +12,10 @@ const Login = () => {
         email: "",
         password: ""
     })
+    const [loading, setLoading] = useState(false)
+
+    const nameRef = useRef(null)
+
     const onChangeFn = (e) => {
         const { name, value } = e.target
         setFormData(prev => ({
@@ -16,6 +23,76 @@ const Login = () => {
             [name]: value
         }))
     }
+
+    const submitHandler = async (e) => {
+        e.preventDefault()
+
+
+
+        if (state === "signUp") {
+
+            try {
+
+                const { data } = await axiosInstance.post('api/user/register', formData)
+
+                if (data.success) {
+                    toast.success("Your Account created successfully", {
+                        position: "top-right",
+                        duration: 3000
+                    })
+                    setState("login")
+                } else {
+                    toast.error(data.message, {
+                        position: "top-right",
+                        duration: 3000,
+                        style: {
+                            background: '#333',
+                            color: '#fff',
+                        },
+                    });
+                }
+
+
+            } catch (error) {
+                console.log(error);
+                toast.error(error.message, { position: "top-right" })
+            }
+
+        } else {
+
+            try {
+
+                const { data } = await axiosInstance.post('api/user/login', formData)
+
+                if (data.success) {
+                    toast.success("Loggin successfully", {
+                        position: "top-right",
+                        duration: 3000
+                    })
+                } else {
+                    toast.error(data.message, {
+                        position: "top-right",
+                        duration: 3000,
+                        style: {
+                            background: '#333',
+                            color: '#fff'
+                        }
+                    })
+                }
+
+            } catch (error) {
+                console.log(error);
+                toast.error(error.message, { position: "top-right" })
+            }
+
+        }
+
+
+    }
+
+    // useEffect(() => {
+    //     nameRef.current.focus()
+    // }, [])
 
     return (
         <div className="w-screen h-screen flex justify-center items-center bg-rose-100">
@@ -25,9 +102,10 @@ const Login = () => {
                     {state === "login" ? "Login" : "SignUp"}
                 </h1>
 
-                <form className="flex flex-col gap-3 mt-5 pb-3">
+                <form onSubmit={submitHandler} className="flex flex-col gap-3 mt-5 pb-3">
                     {state === "signUp" &&
                         <LabelField
+                            ref={nameRef}
                             text="Name"
                             textColor="text-gray-600"
                             name="name"
