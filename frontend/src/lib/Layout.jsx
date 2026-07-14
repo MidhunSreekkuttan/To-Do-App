@@ -1,11 +1,18 @@
+import { useContext } from 'react'
 import Sidebar from '../components/Sidebar'
-import { Outlet } from "react-router-dom"
+import { Navigate, Outlet } from "react-router-dom"
+import { Context } from './Context'
 
 function Layout() {
+
+    const { isLoggedIn } = useContext(Context)
+
     return (
         <div className="flex">
 
             <Sidebar />
+
+            {!isLoggedIn && <Navigate to="/login" replace />}
 
             <Outlet />
 
