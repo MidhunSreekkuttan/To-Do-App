@@ -1,4 +1,61 @@
+import { useEffect, useRef, useState } from "react";
+import { toast } from 'react-hot-toast'
+
 const CreateTask = ({ onFormClose }) => {
+
+  const [formData, setFormData] = useState({
+    title: "",
+    description: ""
+  })
+  const [date, setDate] = useState("")
+  const [time, setTime] = useState("")
+
+  const taskRef = useRef(null)
+  const dateRef = useRef(null)
+  const timeRef = useRef(null)
+  const descriptionRef = useRef(null)
+
+  const today = new Date().toISOString().split("T")[0];
+
+  useEffect(() => {
+
+    const pressKey = (e) => {
+      if (e.key === "Escape") {
+        onFormClose()
+      } else return
+    }
+
+    taskRef.current.focus()
+
+    window.addEventListener("keydown", pressKey)
+
+    return () => window.removeEventListener("keydown", pressKey)
+
+  }, [onFormClose])
+
+  const handleChange = (e) => {
+    const { name, value } = e.target
+
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }))
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+
+    if (date) {
+      const selectedDateTime = new Date(`${date}T${time || "00:00"}`)
+      const now = new Date()
+
+      if (selectedDateTime < now) {
+        return toast.error("Due date and time cannot be in the past")
+      }
+    }
+
+  }
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50 p-4">
 
@@ -19,25 +76,83 @@ const CreateTask = ({ onFormClose }) => {
         </div>
 
         {/* --- FORM --- */}
-        <form className="flex flex-col gap-6">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-6">
 
           <label className="flex flex-col gap-2 text-sm font-semibold text-gray-700">
             Task Title
             <input
+              ref={taskRef}
               className="w-full text-base py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 border
                  border-gray-400 rounded-lg"
               type="text"
               placeholder="e.g., Send team meeting agenda"
+              name="title"
+              value={formData.title}
+              onChange={handleChange}
+              onKeyDown={e => {
+                if (e.key === "Enter") {
+                  e.preventDefault()
+                  dateRef.current.focus()
+                }
+              }}
             />
           </label>
+
+          {/* Due Date & Time */}
+          <div className="flex justify-between gap-4">
+            <label className="flex flex-col gap-1.5 w-1/2 text-sm font-semibold text-gray-800">
+              Due Date
+              <div className="relative">
+                <input
+                  ref={dateRef}
+                  type="date"
+                  min={today}
+                  className="w-full text-sm py-2.5 px-3 bg-transparent border border-gray-300 rounded-md
+                     text-gray-600 focus:outline-none focus:border-gray-400"
+                  onChange={e => setDate(e.target.value)}
+                  value={date}
+                  onKeyDown={e => {
+                    if (e.key === "Enter") {
+                      e.preventDefault()
+                      timeRef.current.focus()
+                    }
+                  }}
+                />
+              </div>
+            </label>
+
+            <label className="flex flex-col gap-1.5 w-1/2 text-sm font-semibold text-gray-800">
+              Time
+              <div className="relative">
+                <input
+                  ref={timeRef}
+                  type="time"
+                  className="w-full text-sm py-2.5 px-3 bg-transparent border border-gray-300 rounded-md text-gray-600 
+                    focus:outline-none focus:border-gray-400"
+                  value={time}
+                  onChange={e => setTime(e.target.value)}
+                  onKeyDown={e => {
+                    if (e.key === "Enter") {
+                      e.preventDefault()
+                      descriptionRef.current.focus()
+                    }
+                  }}
+                />
+              </div>
+            </label>
+          </div>
 
           <label className="flex flex-col gap-2 text-sm font-semibold text-gray-700">
             Notes/Description
             <textarea
+              ref={descriptionRef}
               rows={4}
               className="w-full text-base py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 border
                  border-gray-400 rounded-lg resize-none"
               placeholder="Add any extra details here..."
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
             />
           </label>
 
