@@ -1,6 +1,7 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useState } from 'react';
 import { useSearchParams } from 'react-router-dom'
 import { FaSearch } from "react-icons/fa";
+import CreateTask from './CreateTask';
 
 const TodayTasks = lazy(() => import('./TodayTasks'))
 const UpcomingTasks = lazy(() => import('./UpcomingTasks'))
@@ -9,6 +10,7 @@ const Settings = lazy(() => import('./Settings'))
 const Home = () => {
 
   const [searchParams] = useSearchParams()
+  const [isFormOpen, setIsFormOpen] = useState(false)
 
   const currentTab = searchParams.get("tab") || "today"
 
@@ -20,7 +22,7 @@ const Home = () => {
   })
 
   return (
-    <main className='w-screen h-screen p-5'>
+    <main className='relative w-full h-screen p-5'>
 
       <div className='flex flex-col'>
         <h1 className='font-bold text-5xl'> My&nbsp;
@@ -64,6 +66,22 @@ const Home = () => {
           </Suspense>
         }
       </div>
+
+      {/* Floating Action Button */}
+      {currentTab !== "settings" &&
+
+        <button
+          type='button'
+          onClick={() => setIsFormOpen(true)}
+          className='absolute cursor-pointer flex justify-center bottom-10 right-10
+           bg-blue-500 rounded-full text-white h-20 w-20'
+        >
+          <h1 className='bottom-4 absolute text-6xl'>+</h1>
+        </button>
+
+      }
+
+      {isFormOpen && <CreateTask onFormClose={() => setIsFormOpen(false)} />}
 
     </main >
   )
