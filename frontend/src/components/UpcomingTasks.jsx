@@ -1,6 +1,6 @@
 import React from 'react'
 
-const UpcomingTasks = () => {
+const UpcomingTasks = ({ searchQuery }) => {
   return (
     <div>UpcomingTasks</div>
   )

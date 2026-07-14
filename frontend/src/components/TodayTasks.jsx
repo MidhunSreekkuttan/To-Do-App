@@ -45,7 +45,7 @@ const tasksData = [
   }
 ];
 
-const TodayTasks = () => {
+const TodayTasks = ({ searchQuery }) => {
   return (
     // Assuming the parent container has a light gray/blue background like the mockup
     <div>

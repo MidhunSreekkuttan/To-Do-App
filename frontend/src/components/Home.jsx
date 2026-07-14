@@ -9,10 +9,28 @@ const Settings = lazy(() => import('./Settings'))
 
 const Home = () => {
 
-  const [searchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams()
   const [isFormOpen, setIsFormOpen] = useState(false)
 
   const currentTab = searchParams.get("tab") || "today"
+  const searchQuery = searchParams.get("search") || ""
+
+  const handleSearch = (e) => {
+    e.preventDefault()
+
+    const text = e.target.value
+
+    setSearchParams(prevParams => {
+      if (text) {
+        prevParams.set("search", text)
+      } else {
+        prevParams.delete("search")
+      }
+
+      return prevParams
+
+    }, { replace: true })
+  }
 
   const myDate = new Date()
   const formattedDate = myDate.toLocaleDateString("en-Us", {
@@ -40,7 +58,10 @@ const Home = () => {
             <FaSearch size={20} color='gray' />
             <input className='w-full font-medium text-lg text-slate-500 focus:outline-none'
               type="text"
-              placeholder='Search Tasks' />
+              placeholder='Search Tasks'
+              value={searchQuery}
+              onChange={handleSearch}
+            />
 
           </label>
         }
@@ -48,14 +69,14 @@ const Home = () => {
         {/* Tday tasks */}
         {currentTab === "today" &&
           <Suspense fallback={<div>Loading...</div>}>
-            <TodayTasks />
+            <TodayTasks searchQuery={searchQuery} />
           </Suspense>
         }
 
         {/* Upcoming Tasks */}
         {currentTab === "upcoming" &&
           <Suspense fallback={<div>Loading...</div>}>
-            <UpcomingTasks />
+            <UpcomingTasks searchQuery={searchQuery} />
           </Suspense>
         }
 
