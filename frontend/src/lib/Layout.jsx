@@ -7,12 +7,12 @@ function Layout() {
 
     const { isLoggedIn } = useContext(Context)
 
+    if (!isLoggedIn) return <Navigate to="/login" replace />
+
     return (
         <div className="flex">
 
             <Sidebar />
-
-            {!isLoggedIn && <Navigate to="/login" replace />}
 
             <Outlet />
 
