@@ -4,7 +4,9 @@ export const Context = createContext()
 
 const ContextProvider = ({ children }) => {
 
-    const [isLoggedIn, setIsLoggedin] = useState(false)
+    const [isLoggedIn, setIsLoggedin] = useState(() => {
+        return !!localStorage.getItem('LoginToken')
+    })
 
     const values = {
         isLoggedIn, setIsLoggedin

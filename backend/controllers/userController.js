@@ -71,9 +71,9 @@ export const login = async (req, res) => {
             return res.json({ success: false, message: "Incorrect password" })
         }
 
-        await jwt.sign({ id: user._id.toString() }, process.env.JWT_SECRET)
+        const token = await jwt.sign({ id: user._id.toString() }, process.env.JWT_SECRET)
 
-        res.json({ success: true, message: "User LoggedIn" })
+        res.json({ success: true, message: "User LoggedIn", token, userId: user._id })
 
     } catch (error) {
         res.json({ success: false, message: error.message })
