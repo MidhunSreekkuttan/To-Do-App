@@ -1,19 +1,21 @@
 import { Toaster } from "react-hot-toast"
-import Sidebar from "./components/Sidebar"
-import Home from "./components/Home"
+import Home from './pages/Home'
+import { Route, Routes } from "react-router-dom"
+import Layout from "./lib/Layout"
 
 const App = () => {
   return (
     <>
+    
       <Toaster />
 
-      <div className="flex">
+      <Routes>
+        <Route element={<Layout />}>
 
-        <Sidebar />
+          <Route path="/" element={<Home />} />
 
-        <Home />
-
-      </div>
+        </Route>
+      </Routes>
 
     </>
   )
