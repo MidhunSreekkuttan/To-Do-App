@@ -23,7 +23,7 @@ const Sidebar = () => {
     }
 
     return (
-        <header className='w-sm h-screen bg-blue-500 p-5'>
+        <header className='flex flex-col w-sm h-screen bg-blue-500 p-5'>
 
             <div className='flex flex-col items-center gap-5 py-5 px-16 mb-7'>
                 <h1 className='font-bold text-5xl text-center text-white'>
@@ -50,6 +50,14 @@ const Sidebar = () => {
                     onClick={() => setSearchParams({ tab: "settings" })}
                 />
             </nav>
+
+            <button onClick={() => {
+                localStorage.removeItem("loginToken")
+                window.location.reload()
+            }}
+                className="mt-auto text-white text-2xl font-bold bg-blue-300 py-3 px-4 rounded-lg w-full shadow-md">
+                Logout
+            </button>
 
         </header>
     )

@@ -4,7 +4,6 @@ import axiosInstance from "../lib/AxiosInstance"
 import { toast } from 'react-hot-toast'
 import { Context } from "../lib/Context"
 import { useNavigate } from 'react-router-dom'
-import { LoadingScreen } from "../lib/LoadingScreen"
 
 const Login = () => {
 
