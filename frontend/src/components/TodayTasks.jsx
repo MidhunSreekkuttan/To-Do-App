@@ -53,7 +53,13 @@ const TaskItem = memo(({ item, isUpdating, onToggle, onSelect }) => (
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
             </svg>
           )}
-          {item.description}
+          {item.date
+            ? new Date(item.date).toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            })
+            : "No due date"}
         </span>
       </div>
     </div>
