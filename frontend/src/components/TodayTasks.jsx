@@ -8,6 +8,7 @@ import axiosInstance from '../lib/AxiosInstance';
 const TodayTasks = ({ searchQuery }) => {
 
   const [selectedTask, setSelectedTask] = useState(null)
+  const [updatingStatus, setUpdatingStatus] = useState(null)
 
   const token = localStorage.getItem("loginToken")
 
@@ -44,6 +45,7 @@ const TodayTasks = ({ searchQuery }) => {
   const toggleTaskStatus = async (item) => {
 
     try {
+      setUpdatingStatus(item._id)
 
       const { data } = await axiosInstance.put(`/api/task/changeStatus/${item._id}`,
         { status: !item.completed },
@@ -61,6 +63,8 @@ const TodayTasks = ({ searchQuery }) => {
     } catch (error) {
       console.log(error);
       throw new Error(toast.error(error.message, { position: "top-right" }))
+    } finally {
+      setUpdatingStatus(null)
     }
 
   }
@@ -107,6 +111,7 @@ const TodayTasks = ({ searchQuery }) => {
                     className="sr-only" // sr-only hides it visually but keeps it working for screen readers and forms
                     checked={item.completed}
                     onChange={() => toggleTaskStatus(item)}
+                    disabled={updatingStatus === item._id} // Prevent double-clicks
                   />
 
                   {/* The VISUAL custom checkbox (your existing styling) */}
@@ -116,11 +121,17 @@ const TodayTasks = ({ searchQuery }) => {
                       : 'border-gray-300 hover:border-blue-400'
                       }`}
                   >
-                    {item.completed && (
+                    {updatingStatus === item._id ? (
+                      <svg className="animate-spin w-4 h-4 text-current" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                    ) : item.completed ? (
+                      /* Show Checkmark if completed and NOT loading */
                       <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
                       </svg>
-                    )}
+                    ) : null}
                   </div>
                 </label>
 
