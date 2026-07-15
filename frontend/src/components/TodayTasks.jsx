@@ -74,12 +74,12 @@ const TodayTasks = ({ searchQuery }) => {
 
   const [selectedTask, setSelectedTask] = useState(null)
 
-  const token = localStorage.getItem("loginToken")
-
   const queryClient = useQueryClient()
 
   // get task data
   const getTaskData = async () => {
+
+    const token = localStorage.getItem("loginToken")
 
     try {
 
@@ -109,6 +109,8 @@ const TodayTasks = ({ searchQuery }) => {
   const toggleMutation = useMutation({
     mutationFn: async (item) => {
 
+      const token = localStorage.getItem("loginToken")
+
       const { data } = await axiosInstance.put(`/api/task/changeStatus/${item._id}`,
         { status: !item.completed },
         { headers: { Authorization: token } }
@@ -124,10 +126,10 @@ const TodayTasks = ({ searchQuery }) => {
       await queryClient.cancelQueries({ queryKey: ["taskData"] })
 
       // Snapshot the previous value in case we need to roll back
-      const previousTasks = queryClient.getQueriesData({ queryKey: ["taskData"] })
+      const previousTasks = queryClient.getQueryData({ queryKey: ["taskData"] })
 
       // Optimistically update the cache to the new value instantly
-      queryClient.setQueriesData(["taskData"], (oldTask) => oldTask?.map(task =>
+      queryClient.setQueryData(["taskData"], (oldTask) => oldTask?.map(task =>
         task._id === item._id ? { ...task, completed: !task.completed } : task
       ))
 
