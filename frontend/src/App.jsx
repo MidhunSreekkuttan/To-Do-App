@@ -7,6 +7,7 @@ import { useContext } from "react"
 import { Context } from "./lib/Context"
 import { LoadingScreen } from "./lib/LoadingScreen"
 import ForgotPassword from "./pages/ForgotPassword"
+import ResetPassword from "./pages/ResetPassword"
 
 const App = () => {
 
@@ -23,6 +24,7 @@ const App = () => {
 
         <Route path="/login" element={<Login />} />
         <Route path="/forgotPassword" element={<ForgotPassword />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
 
         <Route path="/" element={<Layout />}>
 
