@@ -1,8 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { toast } from 'react-hot-toast'
 import { LabelField } from "../lib/bottons";
+import axiosInstance from "../lib/AxiosInstance";
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 const CreateTask = ({ onFormClose }) => {
+
+  const queryClient = useQueryClient()
 
   const [formData, setFormData] = useState({
     title: "",
@@ -55,7 +59,37 @@ const CreateTask = ({ onFormClose }) => {
       }
     }
 
+    handleSubmitMutation.mutate(formData)
+
   }
+
+  const handleSubmitMutation = useMutation({
+
+    mutationFn: async (taskData) => {
+      const token = localStorage.getItem("loginToken");
+
+      const { data } = await axiosInstance.post('/api/task/createTask', taskData, {
+        headers: { Authorization: token }
+      });
+
+      if (!data.success) {
+        throw new Error(data.message || "Failed to create task");
+      }
+      return data;
+    },
+
+    onSuccess: (data) => {
+      toast.success(data.message, { position: "top-right" });
+      onFormClose();
+    },
+
+    onError: (err) => {
+      toast.error(err.message, { position: "top-right" });
+    },
+
+    onSettled: () => queryClient.invalidateQueries({ queryKey: ["taskData"] })
+
+  })
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50 p-4">

@@ -139,7 +139,10 @@ const TodayTasks = ({ searchQuery }) => {
     onError: (err, item, context) => {
       queryClient.setQueriesData(['taskData'], context.previousTasks)
       toast.error(err.message || "Failed to update task", { position: "top-right" });
-    }
+    },
+
+    //WHEN DONE (Success or Fail): Refetch to ensure our data perfectly matches the database
+    onSettled: () => queryClient.invalidateQueries({ queryKey: ["taskData"] })
 
   })
 
