@@ -1,6 +1,6 @@
 import { memo, useCallback, useMemo, useState } from 'react';
 import TaskDetails from './TaskDetails';
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'react-hot-toast'
 import LoadingScreen from '../lib/LoadingScreen';
 import axiosInstance from '../lib/AxiosInstance';
@@ -34,17 +34,11 @@ const TaskItem = memo(({ item, isUpdating, onToggle, onSelect }) => (
             : 'border-gray-300 hover:border-blue-400'
             }`}
         >
-          {isUpdating ? (
-            <svg className="animate-spin w-4 h-4 text-current" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3"></circle>
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-          ) : item.completed ? (
-            /* Show Checkmark if completed and NOT loading */
+          {item.completed &&
             <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
             </svg>
-          ) : null}
+          }
         </div>
       </label>
 
@@ -79,7 +73,6 @@ const TaskItem = memo(({ item, isUpdating, onToggle, onSelect }) => (
 const TodayTasks = ({ searchQuery }) => {
 
   const [selectedTask, setSelectedTask] = useState(null)
-  const [updatingStatus, setUpdatingStatus] = useState(null)
 
   const token = localStorage.getItem("loginToken")
 
@@ -113,32 +106,44 @@ const TodayTasks = ({ searchQuery }) => {
   })
 
   // Change status
-  const toggleTaskStatus = useCallback(async (item) => {
-
-    try {
-      setUpdatingStatus(item._id)
+  const toggleMutation = useMutation({
+    mutationFn: async (item) => {
 
       const { data } = await axiosInstance.put(`/api/task/changeStatus/${item._id}`,
         { status: !item.completed },
         { headers: { Authorization: token } }
       )
 
-      if (!data.success) {
-        throw new Error(toast.error(data.message, { position: "top-right" }))
-      }
+      if (!data.success) throw new Error(data.message);
+      return data;
+    },
 
-      queryClient.invalidateQueries(["taskData"])
+    onMutate: async (item) => {
 
-      return data
+      // Cancel any outgoing refetches so they don't overwrite our optimistic update
+      await queryClient.cancelQueries({ queryKey: ["taskData"] })
 
-    } catch (error) {
-      console.log(error);
-      throw new Error(toast.error(error.message, { position: "top-right" }))
-    } finally {
-      setUpdatingStatus(null)
+      // Snapshot the previous value in case we need to roll back
+      const previousTasks = queryClient.getQueriesData({ queryKey: ["taskData"] })
+
+      // Optimistically update the cache to the new value instantly
+      queryClient.setQueriesData(["taskData"], (oldTask) => oldTask?.map(task =>
+        task._id === item._id ? { ...task, completed: !task.completed } : task
+      ))
+
+      return { previousTasks }
+    },
+
+    onError: (err, item, context) => {
+      queryClient.setQueriesData(['taskData'], context.previousTasks)
+      toast.error(err.message || "Failed to update task", { position: "top-right" });
     }
 
-  }, [token, queryClient])
+  })
+
+  const handleToggleTaskStatus = useCallback((item) => {
+    toggleMutation.mutate(item)
+  }, [toggleMutation])
 
   const taskData = data || []
 
@@ -177,8 +182,8 @@ const TodayTasks = ({ searchQuery }) => {
             <TaskItem
               key={item._id}
               item={item}
-              isUpdating={updatingStatus === item._id}
-              onToggle={toggleTaskStatus}
+              isUpdating={toggleMutation.isPending && toggleMutation.variables?._id === item._id}
+              onToggle={handleToggleTaskStatus}
               onSelect={setSelectedTask}
             />
           ))}
