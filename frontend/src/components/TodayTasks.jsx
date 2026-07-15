@@ -159,10 +159,19 @@ const TodayTasks = ({ searchQuery }) => {
   const taskData = data || []
 
   const filteredTasks = useMemo(() => {
-    if (!searchQuery) return taskData
 
-    const lowerCaseQuery = searchQuery.toLowerCase()
-    return taskData.filter(item => item.title.toLowerCase().includes(lowerCaseQuery))
+    const next24Hours = new Date().getTime() + 24 * 60 * 60 * 1000;
+
+    return taskData.filter(data => {
+
+      const matchSearch = searchQuery ? data.title.toLowerCase().includes(searchQuery.toLowerCase()) : true
+
+      const taskTime = data.date ? new Date(data.date).getTime() : 0;
+      const isToday = taskTime <= next24Hours;
+
+      return matchSearch && isToday
+    })
+
   }, [taskData, searchQuery])
 
   if (error) {
@@ -184,7 +193,7 @@ const TodayTasks = ({ searchQuery }) => {
         <div className="mb-4 text-gray-800">
           <h2 className="text-xl font-bold flex items-center gap-2">
             Total Tasks
-            <span className="text-gray-500 text-sm font-normal">({taskData.length})</span>
+            <span className="text-gray-500 text-sm font-normal">({filteredTasks.length})</span>
           </h2>
         </div>
 

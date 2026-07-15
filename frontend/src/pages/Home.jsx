@@ -40,6 +40,8 @@ const Home = () => {
     year: "numeric"
   })
 
+  const hideActionButton = currentTab !== "settings" && currentTab !== "upcoming";
+
   return (
     <main className='relative w-full h-screen p-5'>
 
@@ -90,7 +92,7 @@ const Home = () => {
       </div>
 
       {/* Floating Action Button */}
-      {currentTab !== "settings" &&
+      {hideActionButton &&
 
         <button
           type='button'
