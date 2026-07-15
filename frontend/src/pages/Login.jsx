@@ -74,7 +74,7 @@ const Login = () => {
                 const { data } = await axiosInstance.post('api/user/login', formData)
 
                 if (data.success) {
-                    localStorage.setItem("LoginToken", data.token)
+                    localStorage.setItem("loginToken", data.token)
                     setIsLoggedin(true)
                     navigate(`/${data.userId}`)
                     toast.success("Loggin successfully", {
