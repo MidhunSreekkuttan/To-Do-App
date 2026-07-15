@@ -76,12 +76,14 @@ export const deleteTask = async (req, res) => {
 
     try {
 
-        const userId = req.userId
+        const { userId } = req.params
 
-        const user = await TaskModel.findOneAndDelete({ userId: userId })
+        const user = await TaskModel.find({ userId: userId })
         if (!user) {
             return res.json({ success: false, message: "user not found" })
         }
+
+        await TaskModel.findOneAndDelete({ _id: userId })
 
         res.json({ success: true, message: "task deleted" })
 

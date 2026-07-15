@@ -1,8 +1,58 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
+import { FaRegTrashAlt } from "react-icons/fa";
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import axiosInstance from "../lib/AxiosInstance";
+import toast from "react-hot-toast";
 
 const TaskDetails = ({ task, onClose }) => {
 
     if (!task) return null;
+
+    const queryClient = useQueryClient()
+
+    const deleteTaskMutation = useMutation({
+
+        mutationFn: async (taskId) => {
+            const token = localStorage.getItem("loginToken")
+
+            const { data } = await axiosInstance.delete(`/api/task/deleteTask/${taskId}`, { headers: { Authorization: token } })
+
+            if (!data.success) {
+                throw new Error(data.message);
+            }
+
+            return data
+        },
+
+        onMutate: async (taskId) => {
+
+            await queryClient.cancelQueries({ queryKey: ["taskData"] })
+
+            const previousTasks = queryClient.getQueryData(["taskData"])
+
+            queryClient.setQueryData(["taskData"], (oldData) => {
+                if (!oldData) return []
+
+                return oldData.filter(data => data._id !== taskId)
+            })
+
+            onClose();
+            return { previousTasks }
+        },
+
+        onError: (err, _, context) => {
+            queryClient.setQueryData(["taskData"], context.previousTasks)
+
+            toast.error(err.message || "Failed to delete task", { position: "top-right" });
+        },
+
+        onSettled: () => queryClient.invalidateQueries({ queryKey: ["taskData"] })
+
+    })
+
+    const deleteTask = useCallback((task) => {
+        deleteTaskMutation.mutate(task)
+    }, [deleteTaskMutation])
 
     useEffect(() => {
 
@@ -69,6 +119,12 @@ const TaskDetails = ({ task, onClose }) => {
                     </div>
 
                 </div>
+
+                <button onClick={() => deleteTask(task._id)}
+                    className="absolute right-8 bottom-4 w-40 py-1 px-6 rounded-lg text-2xl font-semibold bg-red-500
+                    text-white flex gap-3 justify-between items-center">
+                    <FaRegTrashAlt size={22} /> <span>Delete</span>
+                </button>
 
             </div>
         </div>
