@@ -50,16 +50,20 @@ const CreateTask = ({ onFormClose }) => {
   const handleSubmit = (e) => {
     e.preventDefault()
 
+    let taskPayload = { ...formData }
+
     if (date) {
       const selectedDateTime = new Date(`${date}T${time || "00:00"}`)
       const now = new Date()
 
       if (selectedDateTime < now) {
-        return toast.error("Due date and time cannot be in the past")
+        return toast.error("Due date and time cannot be in the past", { position: "top-right" })
       }
+
+      taskPayload.date = selectedDateTime.toISOString()
     }
 
-    handleSubmitMutation.mutate(formData)
+    handleSubmitMutation.mutate(taskPayload)
 
   }
 

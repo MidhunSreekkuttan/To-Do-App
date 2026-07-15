@@ -6,15 +6,16 @@ export const createTask = async (req, res) => {
 
         const userId = req.userId
 
-        const { title, description } = req.body
-        if (!title || !description) {
+        const { title, description, date } = req.body
+        if (!title || !description || !date) {
             return res.json({ success: false, message: "enter credentials" })
         }
 
         const task = await TaskModel({
             userId,
             title,
-            description
+            description,
+            date
         })
 
         await task.save()
