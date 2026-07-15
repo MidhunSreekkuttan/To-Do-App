@@ -5,12 +5,13 @@ import Layout from "./lib/Layout"
 import Login from "./pages/Login"
 import { useContext } from "react"
 import { Context } from "./lib/Context"
+import LoadingScreen from "./lib/LoadingScreen"
 
 const App = () => {
 
   const { isLoading, userData } = useContext(Context)
 
-  if (isLoading) return <div>Loading...</div>
+  if (isLoading) return <LoadingScreen />
 
   return (
     <>
