@@ -169,6 +169,7 @@ const Login = () => {
 
                     {state === "login" && (
                         <button type="button"
+                            onClick={() => navigate("/forgotPassword")}
                             className="text-sm text-blue-500 hover:text-blue-700 flex justify-end font-medium transition-colors -mt-2 cursor-pointer">
                             Forgot Password?
                         </button>

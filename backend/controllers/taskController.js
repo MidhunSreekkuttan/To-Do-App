@@ -7,7 +7,7 @@ export const createTask = async (req, res) => {
         const userId = req.userId
 
         const { title, description, date } = req.body
-        if (!title || !description || !date) {
+        if (!title || !description) {
             return res.json({ success: false, message: "enter credentials" })
         }
 

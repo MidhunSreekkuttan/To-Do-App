@@ -6,6 +6,7 @@ import Login from "./pages/Login"
 import { useContext } from "react"
 import { Context } from "./lib/Context"
 import { LoadingScreen } from "./lib/LoadingScreen"
+import ForgotPassword from "./pages/ForgotPassword"
 
 const App = () => {
 
@@ -21,6 +22,7 @@ const App = () => {
       <Routes>
 
         <Route path="/login" element={<Login />} />
+        <Route path="/forgotPassword" element={<ForgotPassword />} />
 
         <Route path="/" element={<Layout />}>
 
