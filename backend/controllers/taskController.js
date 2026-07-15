@@ -55,7 +55,7 @@ export const changeTaskData = async (req, res) => {
         const { taskId } = req.params
         const { status } = req.body
         if (!taskId) return res.json({ success: false, message: "taskId missing" })
-        if (!status) return res.json({ success: false, message: "status is missing" })
+        if (status === undefined) return res.json({ success: false, message: "status is missing" })
 
         const user = await TaskModel.findOne({ userId: userId })
         if (!user) {

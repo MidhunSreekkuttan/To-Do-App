@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import TaskDetails from './TaskDetails';
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'react-hot-toast'
 import LoadingScreen from '../lib/LoadingScreen';
 import axiosInstance from '../lib/AxiosInstance';
@@ -9,9 +9,12 @@ const TodayTasks = ({ searchQuery }) => {
 
   const [selectedTask, setSelectedTask] = useState(null)
 
-  const getTaskData = async () => {
+  const token = localStorage.getItem("loginToken")
 
-    const token = localStorage.getItem("loginToken")
+  const queryClient = useQueryClient()
+
+  // get task data
+  const getTaskData = async () => {
 
     try {
 
@@ -36,6 +39,31 @@ const TodayTasks = ({ searchQuery }) => {
     queryKey: ["taskData"],
     queryFn: getTaskData
   })
+
+  // Change status
+  const toggleTaskStatus = async (item) => {
+
+    try {
+
+      const { data } = await axiosInstance.put(`/api/task/changeStatus/${item._id}`,
+        { status: !item.completed },
+        { headers: { Authorization: token } }
+      )
+
+      if (!data.success) {
+        throw new Error(toast.error(data.message, { position: "top-right" }))
+      }
+
+      queryClient.invalidateQueries(["taskData"])
+
+      return data
+
+    } catch (error) {
+      console.log(error);
+      throw new Error(toast.error(error.message, { position: "top-right" }))
+    }
+
+  }
 
   const taskData = data || []
 
@@ -78,7 +106,7 @@ const TodayTasks = ({ searchQuery }) => {
                     type="checkbox"
                     className="sr-only" // sr-only hides it visually but keeps it working for screen readers and forms
                     checked={item.completed}
-                    readOnly
+                    onChange={() => toggleTaskStatus(item)}
                   />
 
                   {/* The VISUAL custom checkbox (your existing styling) */}
