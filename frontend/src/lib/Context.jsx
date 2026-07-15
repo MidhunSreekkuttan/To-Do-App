@@ -11,8 +11,6 @@ const ContextProvider = ({ children }) => {
     const [userData, setUserData] = useState("")
     const [isLoading, setIsLoading] = useState(false)
 
-    console.log("userData", userData);
-
     const getUserData = async () => {
         const token = localStorage.getItem("loginToken")
         if (!token) {

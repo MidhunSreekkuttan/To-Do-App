@@ -1,4 +1,5 @@
-import React from 'react';
+import { useState } from 'react';
+import TaskDetails from './TaskDetails';
 
 const tasksData = [
   {
@@ -46,8 +47,10 @@ const tasksData = [
 ];
 
 const TodayTasks = ({ searchQuery }) => {
+
+  const [selectedTask, setSelectedTask] = useState(null)
+
   return (
-    // Assuming the parent container has a light gray/blue background like the mockup
     <div>
 
       {/* Header Section */}
@@ -61,10 +64,10 @@ const TodayTasks = ({ searchQuery }) => {
       {/* Task List */}
       <div className="flex flex-col gap-3 max-h-[63vh] overflow-y-auto">
         {tasksData.map((item) => (
-          <div
+          <div onClick={() => setSelectedTask(item)}
             key={item.id}
             className="flex items-center justify-between bg-white py-3 px-4 rounded-xl shadow-sm border
-               border-gray-100 hover:shadow-md transition-shadow duration-200"
+               border-gray-100 hover:shadow-md transition-shadow duration-200 cursor-pointer"
           >
             {/* Left side: Checkbox and Text */}
             <div className="flex items-center gap-4">
@@ -109,6 +112,9 @@ const TodayTasks = ({ searchQuery }) => {
           </div>
         ))}
       </div>
+
+      {selectedTask && <TaskDetails task={selectedTask} onClose={() => setSelectedTask(null)} />}
+
     </div>
   );
 };
