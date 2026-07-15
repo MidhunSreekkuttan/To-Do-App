@@ -52,7 +52,8 @@ export const changeTaskData = async (req, res) => {
     try {
 
         const userId = req.userId
-        const { taskId, status } = req.body
+        const { taskId } = req.params
+        const { status } = req.body
         if (!taskId) return res.json({ success: false, message: "taskId missing" })
         if (!status) return res.json({ success: false, message: "status is missing" })
 
