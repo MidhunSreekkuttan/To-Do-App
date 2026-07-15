@@ -34,7 +34,7 @@ export const getTaskData = async (req, res) => {
 
         const userId = req.userId
 
-        const user = await TaskModel.findOne({ userId: userId })
+        const user = await TaskModel.find({ userId: userId })
         if (!user) {
             return res.json({ success: false, message: "user not found" })
         }
@@ -46,6 +46,29 @@ export const getTaskData = async (req, res) => {
         console.log(error);
     }
 
+}
+
+export const changeTaskData = async (req, res) => {
+    try {
+
+        const userId = req.userId
+        const { taskId, status } = req.body
+        if (!taskId) return res.json({ success: false, message: "taskId missing" })
+        if (!status) return res.json({ success: false, message: "status is missing" })
+
+        const user = await TaskModel.findOne({ userId: userId })
+        if (!user) {
+            return res.json({ success: false, message: "User not found" })
+        }
+
+        await TaskModel.findByIdAndUpdate({ _id: taskId }, { completed: status })
+
+        res.json({ success: true, message: "status changed" })
+
+    } catch (error) {
+        res.json({ success: false, message: error.message })
+        console.log(error);
+    }
 }
 
 export const deleteTask = async (req, res) => {
