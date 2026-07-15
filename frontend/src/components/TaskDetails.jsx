@@ -7,6 +7,7 @@ const TaskDetails = ({ task, onClose }) => {
     useEffect(() => {
 
         const closeTab = (e) => {
+            e.preventDefault()
             if (e.key === "Escape") return onClose()
         }
 
