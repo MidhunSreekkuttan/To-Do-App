@@ -1,9 +1,10 @@
-import { useState, useRef, useContext } from "react"
+import { useState, useRef, useContext, useEffect } from "react"
 import { LabelField } from "../lib/bottons"
 import axiosInstance from "../lib/AxiosInstance"
 import { toast } from 'react-hot-toast'
 import { Context } from "../lib/Context"
 import { useNavigate } from 'react-router-dom'
+import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 
 const Login = () => {
 
@@ -16,8 +17,12 @@ const Login = () => {
         password: ""
     })
     const [loading, setLoading] = useState(false)
+    const [showPassword, setShowPassword] = useState(false)
 
     const nameRef = useRef(null)
+    const emailRef = useRef(null)
+    const passRef = useRef(null)
+
     const navigate = useNavigate()
 
     const onChangeFn = (e) => {
@@ -84,6 +89,13 @@ const Login = () => {
         }
     }
 
+    useEffect(() => {
+
+        { state === "signUp" && nameRef.current.focus() }
+        { state === "login" && emailRef.current.focus() }
+
+    }, [state])
+
     return (
 
         <div className="w-screen h-screen flex justify-center items-center bg-gray-100">
@@ -118,6 +130,7 @@ const Login = () => {
                     }
 
                     <LabelField
+                        ref={emailRef}
                         text="Email"
                         textColor="text-gray-700"
                         name="email"
@@ -129,17 +142,30 @@ const Login = () => {
                         otherCss="focus:ring-blue-500 border border-gray-400"
                     />
 
-                    <LabelField
-                        text="Password"
-                        textColor="text-gray-700"
-                        name="password"
-                        value={formData.password}
-                        onChange={onChangeFn}
-                        placeholder="Enter your Password"
-                        type="password"
-                        textSize="text-sm"
-                        otherCss="focus:ring-blue-500 border border-gray-400"
-                    />
+                    <label className='flex flex-col gap-2 text-sm font-semibold text-gray-700'>
+                        Password
+                        <div className="relative w-full">
+                            <input
+                                ref={passRef}
+                                onChange={onChangeFn}
+                                className='w-full text-base py-2 pl-3 pr-10 focus:outline-none focus:ring-2 rounded-lg
+                                     focus:ring-blue-500 border border-gray-400'
+                                type={showPassword ? "text" : "password"}
+                                placeholder="Enter your password"
+                                name="password"
+                                value={formData.password}
+                            />
+
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 
+                                    hover:text-blue-500 transition-colors cursor-pointer"
+                            >
+                                {showPassword ? <FaRegEyeSlash size={18} /> : <FaRegEye size={18} />}
+                            </button>
+                        </div>
+                    </label>
 
                     {state === "login" && (
                         <button type="button"
