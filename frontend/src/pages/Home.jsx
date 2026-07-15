@@ -2,6 +2,7 @@ import { lazy, Suspense, useState } from 'react';
 import { useSearchParams } from 'react-router-dom'
 import { FaSearch } from "react-icons/fa";
 import CreateTask from '../components/CreateTask';
+import { CompLoadingScreen } from '../lib/LoadingScreen';
 
 const TodayTasks = lazy(() => import('../components/TodayTasks'))
 const UpcomingTasks = lazy(() => import('../components/UpcomingTasks'))
@@ -68,21 +69,21 @@ const Home = () => {
 
         {/* Tday tasks */}
         {currentTab === "today" &&
-          <Suspense fallback={<div>Loading...</div>}>
+          <Suspense fallback={<CompLoadingScreen />}>
             <TodayTasks searchQuery={searchQuery} />
           </Suspense>
         }
 
         {/* Upcoming Tasks */}
         {currentTab === "upcoming" &&
-          <Suspense fallback={<div>Loading...</div>}>
+          <Suspense fallback={<CompLoadingScreen />}>
             <UpcomingTasks searchQuery={searchQuery} />
           </Suspense>
         }
 
         {/* Settings */}
         {currentTab === "settings" &&
-          <Suspense fallback={<div>Loading...</div>}>
+          <Suspense fallback={<CompLoadingScreen />}>
             <Settings />
           </Suspense>
         }

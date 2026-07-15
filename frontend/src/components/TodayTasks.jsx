@@ -2,8 +2,8 @@ import { memo, useCallback, useMemo, useState } from 'react';
 import TaskDetails from './TaskDetails';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'react-hot-toast'
-import LoadingScreen from '../lib/LoadingScreen';
 import axiosInstance from '../lib/AxiosInstance';
+import { CompLoadingScreen } from '../lib/LoadingScreen';
 
 const TaskItem = memo(({ item, isUpdating, onToggle, onSelect }) => (
 
@@ -175,7 +175,8 @@ const TodayTasks = ({ searchQuery }) => {
 
   return (
     <>
-      {isLoading && <LoadingScreen />}
+
+      {isLoading && <CompLoadingScreen />}
 
       <div>
 

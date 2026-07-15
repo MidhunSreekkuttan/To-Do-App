@@ -5,7 +5,7 @@ import Layout from "./lib/Layout"
 import Login from "./pages/Login"
 import { useContext } from "react"
 import { Context } from "./lib/Context"
-import LoadingScreen from "./lib/LoadingScreen"
+import { LoadingScreen } from "./lib/LoadingScreen"
 
 const App = () => {
 
