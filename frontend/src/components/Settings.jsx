@@ -6,12 +6,12 @@ import toast from 'react-hot-toast';
 import { FaPhoneAlt } from "react-icons/fa";
 import { FaLocationDot } from "react-icons/fa6";
 import { CgProfile } from "react-icons/cg";
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 const Settings = () => {
   const { userData } = useContext(Context);
 
   const [isEditing, setIsEditing] = useState(false);
-  const [loading, setLoading] = useState(false);
 
   const [imageFile, setImageFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
@@ -23,6 +23,8 @@ const Settings = () => {
     location: '',
     bio: ''
   });
+
+  const queryClient = useQueryClient()
 
   useEffect(() => {
     if (userData) {
@@ -63,45 +65,90 @@ const Settings = () => {
     });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmitMutation = useMutation({
+    mutationFn: async (mutateData) => {
 
-    try {
-      setLoading(true);
       const token = localStorage.getItem('loginToken');
 
-      const submitData = new FormData();
-      submitData.append('name', formData.name);
-      submitData.append('phone', formData.phone);
-      submitData.append('location', formData.location);
-      submitData.append('bio', formData.bio);
-
-      if (imageFile) {
-        submitData.append('profilePic', imageFile);
-      }
-
-      const { data } = await axiosInstance.put('/api/user/updateProfile', submitData, {
+      const { data } = await axiosInstance.put('/api/user/updateProfile', mutateData, {
         headers: {
           Authorization: token,
           'Content-Type': 'multipart/form-data'
         }
       });
 
-      if (data.success) {
-        toast.success("Profile updated successfully!", { position: "top-right" });
-        setIsEditing(false);
-        setImageFile(null);
-        if (data.user?.profilePic) setPreviewUrl(data.user.profilePic);
-      } else {
-        toast.error(data.message || "Failed to update profile", { position: "top-right" });
+      if (!data.success) {
+        throw new Error(data.message)
       }
-    } catch (error) {
-      console.error(error);
-      toast.error(error.message, { position: "top-right" });
-    } finally {
-      setLoading(false);
+
+      return data
+    },
+
+    onMutate: async (mutateData) => {
+
+      await queryClient.cancelQueries({ queryKey: ["userData"] })
+
+      const previousUserData = queryClient.getQueryData(["userData"])
+
+      queryClient.setQueryData(["userData"], (oldData) => {
+
+        if (!oldData) return []
+
+        return {
+          ...oldData,
+          name: mutateData.get('name'),
+          phone: mutateData.get('phone'),
+          location: mutateData.get('location'),
+          bio: mutateData.get('bio'),
+        }
+
+      })
+
+      return { previousUserData }
+
+    },
+
+    onError: (err, mutateData, context) => {
+
+      console.log(err.message);
+      toast.error(err.message, { position: "top-right" })
+
+      if (context?.previousUserData) {
+        queryClient.setQueryData(["userData"], context.previousUserData)
+      }
+
+    },
+
+    onSuccess: (data) => {
+      toast.success("Profile updated", { position: "top-right" })
+      setIsEditing(false)
+      setImageFile(null)
+      if (data.user?.profilePic) setPreviewUrl(data.user.profilePic)
+    },
+
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["userData"] })
     }
-  };
+
+  })
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+
+    const submitData = new FormData();
+
+    submitData.append('name', formData.name);
+    submitData.append('phone', formData.phone);
+    submitData.append('location', formData.location);
+    submitData.append('bio', formData.bio);
+
+    if (imageFile) {
+      submitData.append('image', imageFile);
+    }
+
+    handleSubmitMutation.mutate(submitData)
+
+  }
 
   return (
     <div className="max-w-6xl h-full flex items-center flex-col">
@@ -349,7 +396,7 @@ const Settings = () => {
             <button
               type="button"
               onClick={handleCancel}
-              disabled={loading}
+              disabled={handleSubmitMutation.isPending}
               className="px-6 py-2.5 rounded-lg font-semibold text-gray-600 bg-white border border-gray-300 hover:bg-gray-100 transition-colors disabled:opacity-50 cursor-pointer"
             >
               Cancel
@@ -357,10 +404,10 @@ const Settings = () => {
             <button
               type="submit"
               form="settings-form" // Connects to the form ID above
-              disabled={loading}
+              disabled={handleSubmitMutation.isPending}
               className="px-6 py-2.5 rounded-lg font-semibold text-white bg-blue-600 hover:bg-blue-700 transition-colors disabled:opacity-70 flex items-center justify-center min-w-[140px] cursor-pointer shadow-sm"
             >
-              {loading ? (
+              {handleSubmitMutation.isPending ? (
                 <div className='w-5 h-5 border-3 border-white border-t-transparent rounded-full animate-spin' />
               ) : (
                 "Save Changes"
