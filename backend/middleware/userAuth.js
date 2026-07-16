@@ -9,7 +9,11 @@ const userAuth = async (req, res, next) => {
             return res.json({ success: false, message: "Something went wrong plz login again" })
         }
 
-        const decodeToken = jwt.decode(loginToken, process.env.JWT_SECRET)
+        const token = loginToken.startsWith("Bearer ")
+            ? loginToken.split(" ")[1]
+            : loginToken;
+
+        const decodeToken = jwt.verify(token, process.env.JWT_SECRET)
         if (!decodeToken) {
             return res.json({ success: false, message: "Access denide" })
         } else {
