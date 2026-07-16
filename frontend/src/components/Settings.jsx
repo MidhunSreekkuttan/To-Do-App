@@ -5,6 +5,7 @@ import axiosInstance from '../lib/AxiosInstance';
 import toast from 'react-hot-toast';
 import { FaPhoneAlt } from "react-icons/fa";
 import { FaLocationDot } from "react-icons/fa6";
+import { CgProfile } from "react-icons/cg";
 
 const Settings = () => {
   const { userData } = useContext(Context);
@@ -12,10 +13,8 @@ const Settings = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const defaultAvatar = "https://www.wherewindsmeetgame.com/pc/gw/20251024112521/img/4_90e879e4.jpg?image_process=format,jpg";
-
   const [imageFile, setImageFile] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState(defaultAvatar);
+  const [previewUrl, setPreviewUrl] = useState(null);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -34,7 +33,7 @@ const Settings = () => {
         location: userData.location || '',
         bio: userData.bio || ''
       });
-      setPreviewUrl(userData.profilePic || defaultAvatar);
+      setPreviewUrl(userData.profilePic || null);
     }
   }, [userData]);
 
@@ -54,7 +53,7 @@ const Settings = () => {
   const handleCancel = () => {
     setIsEditing(false);
     setImageFile(null);
-    setPreviewUrl(userData.profilePic || defaultAvatar);
+    setPreviewUrl(userData.profilePic || null);
     setFormData({
       name: userData.name || '',
       email: userData.email || '',
@@ -130,11 +129,17 @@ const Settings = () => {
               <div className="bg-white rounded-3xl border border-gray-200 shadow-sm p-6 flex flex-col items-center 
                 justify-center text-center">
                 <div className="w-32 h-32 rounded-full overflow-hidden ring-4 ring-blue-100 shadow-lg mb-5">
-                  <img
-                    src={previewUrl}
-                    alt="Profile"
-                    className="w-full h-full object-cover"
-                  />
+
+                  {previewUrl ? (
+                    <img
+                      src={previewUrl}
+                      alt="Profile"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <CgProfile className='w-full h-full opacity-50' />
+                  )}
+
                 </div>
 
                 <h2 className="mt-4 text-2xl font-bold">
@@ -235,11 +240,17 @@ const Settings = () => {
             {/* Profile Picture & Basic Info */}
             <div className="flex items-center gap-5">
               <div className="relative w-30 h-30 rounded-full overflow-hidden border-4 border-white shadow-md bg-gray-100 shrink-0">
-                <img
-                  src={previewUrl}
-                  alt="Profile"
-                  className="w-full h-full object-cover"
-                />
+
+                {previewUrl ? (
+                  <img
+                    src={previewUrl}
+                    alt="Profile"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <CgProfile className='w-full h-full opacity-50' />
+                )}
+
                 {isEditing && (
                   <label className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center cursor-pointer opacity-0 hover:opacity-100 transition-opacity duration-200">
                     <svg className="w-6 h-6 text-white mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
