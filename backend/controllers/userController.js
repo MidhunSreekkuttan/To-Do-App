@@ -189,24 +189,34 @@ export const resetPassword = async (req, res) => {
 
 }
 
-export const updateProfilePic = async (req, res) => {
+export const updateProfile = async (req, res) => {
 
     try {
 
         const userId = req.userId
 
-        if (!req.file) {
-            return res.json({ success: false, message: "No image file provided" })
+        const { name, bio, phone, location } = req.body
+
+        const updateData = {
+            name,
+            bio,
+            phone,
+            location
         }
 
-        const result = await uploadimage(req.file.buffer)
+        if (req.file) {
+            const result = await uploadimage(req.file.buffer)
 
-        const updateUser = await UserModel.findByIdAndUpdate({ _id: userId }, { profilePic: result.secure_url }, { new: true })
+            updateData.profilePic = result.secure_url
+        }
+
+        const updateUser = await UserModel.findByIdAndUpdate({ _id: userId }, updateData)
+
         if (!updateUser) {
-            return res.json({ success: "user not find" })
+            return res.status(404).json({ success: "user not find" })
         }
 
-        return res.json({ success: true, message: "Profile Pic updated" })
+        return res.json({ success: true, message: "Profile updated" })
 
     } catch (error) {
         console.log(error);
