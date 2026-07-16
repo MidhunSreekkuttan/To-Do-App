@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import crypto from 'crypto'
 import sendMail from "../config/nodeMailer.js"
+import { uploadimage } from "../config/cloudinary.js"
 
 export const registration = async (req, res) => {
 
@@ -195,6 +196,35 @@ export const resetPassword = async (req, res) => {
     } catch (error) {
         console.log(error);
         res.json({ success: false, message: error.message })
+    }
+
+}
+
+export const updateProfilePic = async (req, res) => {
+
+    try {
+
+        const userId = req.userId
+
+        if (!req.file) {
+            return res.json({ success: false, message: "No image file provided" })
+        }
+
+        const result = await uploadimage(req.file.buffer)
+
+        const updateUser = await UserModel.findByIdAndUpdate({ _id: userId }, { profilePic: result.secure_url }, { new: true })
+        if (!updateUser) {
+            return res.json({ success: "user not find" })
+        }
+
+        return res.json({ success: true, message: "Profile Pic updated" })
+
+    } catch (error) {
+        console.log(error);
+        if (error?.message?.includes('Invalid file type')) {
+            return res.status(400).json({ error: error.message });
+        }
+        return res.status(500).json({ error: error.message });
     }
 
 }
