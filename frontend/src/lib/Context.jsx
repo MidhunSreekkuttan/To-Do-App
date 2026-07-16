@@ -1,5 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import axiosInstance from "./AxiosInstance";
+import { useQuery } from '@tanstack/react-query'
 
 export const Context = createContext()
 
@@ -8,20 +9,12 @@ const ContextProvider = ({ children }) => {
     const [isLoggedIn, setIsLoggedin] = useState(() => {
         return !!localStorage.getItem('loginToken')
     })
-    const [userData, setUserData] = useState("")
-    const [isLoading, setIsLoading] = useState(false)
 
-    const getUserData = async () => {
-        const token = localStorage.getItem("loginToken")
-        if (!token) {
-            setUserData("")
-            setIsLoggedin(false)
-            return
-        }
+    const token = localStorage.getItem("loginToken")
 
-        try {
-
-            setIsLoading(true)
+    const { data: userData, isLoading, error } = useQuery({
+        queryKey: ["userData"],
+        queryFn: async () => {
 
             const { data } = await axiosInstance.get("/api/user/getUserData", {
                 headers: {
@@ -29,23 +22,25 @@ const ContextProvider = ({ children }) => {
                 }
             })
 
-            if (data.success) {
-                setUserData(data?.user)
-            } else {
-                setUserData("")
+            if (!data.success) {
+                throw new Error(data.message)
             }
 
-        } catch (error) {
-            console.log(error);
-            setUserData("")
-        } finally {
-            setIsLoading(false)
-        }
-    }
+            return data.user
+        },
+
+        enabled: isLoggedIn && !!token,
+        retry: false
+
+    })
 
     useEffect(() => {
-        getUserData()
-    }, [])
+        if (error) {
+            console.log(error.message);
+            localStorage.removeItem("loginToken")
+            setIsLoggedin(false);
+        }
+    }, [error])
 
     const values = {
         isLoggedIn, setIsLoggedin,

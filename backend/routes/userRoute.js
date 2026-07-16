@@ -11,6 +11,6 @@ userRouter.get("/getUserData", userAuth, getUserData)
 userRouter.post("/forgot-password", forgotPassword)
 userRouter.post("/reset-password/:token", resetPassword)
 
-userRouter.put("/updateProfilePic", userAuth, upload.single("image"), updateProfile)
+userRouter.put("/updateProfile", userAuth, upload.single("image"), updateProfile)
 
 export default userRouter
