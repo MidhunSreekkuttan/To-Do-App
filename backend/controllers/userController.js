@@ -2,8 +2,8 @@ import UserModel from "../data-base/models/userModel.js"
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import crypto from 'crypto'
-import sendMail from "../config/nodeMailer.js"
 import { uploadimage } from "../config/cloudinary.js"
+import { forgotPasswordTemplate } from "../config/templates.js"
 
 export const registration = async (req, res) => {
 
@@ -130,18 +130,7 @@ export const forgotPassword = async (req, res) => {
         const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
         const resetUrl = `${frontendUrl}/reset-password/${resetToken}`;
 
-        const mailOptions = {
-            from: `"TaskFlow Support" <${process.env.EMAIL_USER}>`,
-            to: user.email,
-            subject: "Password Reset Request",
-            text: `You are receiving this email because you (or someone else) requested a password reset for your TaskFlow account.\n\n
-                Please click on the following link, or paste it into your browser to complete the process:\n\n
-                    ${resetUrl}\n\n
-                    This link will expire in 15 minutes.\n
-                        If you did not request this, please ignore this email and your password will remain unchanged.`,
-        }
-
-        await sendMail.sendMail(mailOptions)
+        await forgotPasswordTemplate(resetUrl, user)
 
         res.json({ success: true, message: "Password reset link sent to your email" });
 
