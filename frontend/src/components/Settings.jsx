@@ -90,9 +90,12 @@ const Settings = () => {
 
       const previousUserData = queryClient.getQueryData(["userData"])
 
+      const uploadedImage = mutateData.get("image")
+      const optimisticPic = uploadedImage ? URL.createObjectURL(uploadedImage) : previousUserData?.profilePic
+
       queryClient.setQueryData(["userData"], (oldData) => {
 
-        if (!oldData) return []
+        if (!oldData) return {}
 
         return {
           ...oldData,
@@ -100,6 +103,7 @@ const Settings = () => {
           phone: mutateData.get('phone'),
           location: mutateData.get('location'),
           bio: mutateData.get('bio'),
+          profilePic: optimisticPic
         }
 
       })
@@ -117,11 +121,12 @@ const Settings = () => {
         queryClient.setQueryData(["userData"], context.previousUserData)
       }
 
+      setIsEditing(true);
+
     },
 
     onSuccess: (data) => {
       toast.success("Profile updated", { position: "top-right" })
-      setIsEditing(false)
       setImageFile(null)
       if (data.user?.profilePic) setPreviewUrl(data.user.profilePic)
     },
@@ -147,6 +152,8 @@ const Settings = () => {
     }
 
     handleSubmitMutation.mutate(submitData)
+
+    setIsEditing(false);
 
   }
 
