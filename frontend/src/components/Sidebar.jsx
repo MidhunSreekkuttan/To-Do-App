@@ -1,11 +1,16 @@
+import { useContext } from "react";
 import { FaCalendarDay } from "react-icons/fa";
 import { FaCalendarDays } from "react-icons/fa6";
 import { IoSettingsOutline } from "react-icons/io5";
 import { useSearchParams } from 'react-router-dom'
+import { Context } from "../lib/Context";
+import { CgProfile } from "react-icons/cg";
 
 const Sidebar = () => {
 
     const [searchParams, setSearchParams] = useSearchParams()
+
+    const { userData } = useContext(Context)
 
     const currentTab = searchParams.get("tab") || "today"
 
@@ -30,7 +35,11 @@ const Sidebar = () => {
                     Task<span className='font-light text-white'>Flow</span>
                 </h1>
 
-                <img className='h-30 w-30 object-cover rounded-full' src="https://www.wherewindsmeetgame.com/pc/gw/20251024112521/img/4_90e879e4.jpg?image_process=format,jpg" alt="Profile photo" />
+                {userData?.profilePic ? (
+                    <img className='h-30 w-30 object-cover rounded-full' src={userData?.profilePic} alt="Profile photo" />
+                ) : (
+                    <CgProfile className='h-30 w-30 opacity-50' />
+                )}
             </div>
 
             <nav className="flex flex-col gap-3">
