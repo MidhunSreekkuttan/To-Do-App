@@ -37,13 +37,7 @@ const Home = () => {
     <main className='w-full h-full flex flex-col overflow-hidden'>
 
       <div className='flex flex-col shrink-0 pt-4 px-4 md:pt-8 md:px-8'>
-        <div className="flex flex-row-reverse md:flex-row justify-between items-center gap-3">
-          <button
-            className="md:hidden p-2 bg-gray-200 rounded-lg text-gray-700 hover:bg-gray-300"
-            onClick={() => setIsSidebarOpen(true)}
-          >
-            <FaBars size={24} />
-          </button>
+        <div className="flex items-center gap-3">
           <h1 className='font-bold text-3xl md:text-5xl'>
             {currentTab === "settings" ? "Settings" : "My Tasks"}
           </h1>

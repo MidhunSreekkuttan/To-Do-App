@@ -190,7 +190,7 @@ const UpcomingTasks = ({ searchQuery }) => {
       <div className='flex flex-col w-full'>
 
         {/* Header Section */}
-        <div className="sticky top-0 z-10 bg-white mb-4 text-gray-800">
+        <div className="sticky top-0 z-10 bg-gray-50 mb-4 text-gray-800">
           <h2 className="text-xl font-bold flex items-center gap-2">
             Total Tasks
             <span className="text-gray-500 text-sm font-normal">({filteredTasks.length})</span>
