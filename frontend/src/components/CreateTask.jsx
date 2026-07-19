@@ -98,7 +98,7 @@ const CreateTask = ({ onFormClose }) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50 p-4">
 
-      <div className="relative w-full max-w-lg bg-amber-50 rounded-2xl py-6 px-8 shadow-2xl">
+      <div className="relative w-full max-w-lg bg-amber-50 rounded-2xl py-6 px-5 md:px-8 shadow-2xl mx-4">
 
         {/* --- HEADER --- */}
         <div className="flex flex-col mb-6">
