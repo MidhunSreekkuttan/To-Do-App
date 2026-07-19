@@ -98,9 +98,9 @@ const Login = () => {
 
     return (
 
-        <div className="w-screen h-screen flex justify-center items-center bg-gray-100">
+        <div className="w-full min-h-dvh flex justify-center items-center bg-gray-100 p-4">
 
-            <div className="w-full max-w-md bg-amber-50 rounded-2xl py-8 px-10 shadow-2xl">
+            <div className="w-full max-w-md bg-amber-50 rounded-2xl py-8 px-6 md:px-10 shadow-2xl">
 
                 {/* TaskFlow Branding */}
                 <div className='flex flex-col items-center mb-6'>
