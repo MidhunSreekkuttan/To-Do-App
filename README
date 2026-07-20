@@ -1,0 +1,165 @@
+# TaskFlow ✅
+
+A modern, full-stack task management web application designed for seamless productivity. TaskFlow allows users to organize their daily tasks, manage their profiles, and stay on top of their schedules with a fast, responsive, and intuitive interface.
+
+## 🚀 Features
+
+* **Secure Authentication:** User registration and login using JSON Web Tokens (JWT) and bcrypt password hashing.
+* **Account Recovery:** Full "Forgot Password" and "Reset Password" workflow with secure email links via Nodemailer.
+* **Profile Management:** Update personal information and upload profile pictures (seamlessly integrated with Cloudinary).
+* **Task Management:** Create, delete, and view tasks categorized by "Today" and "Upcoming".
+* **Optimistic UI Updates:** Instant, zero-latency task status toggling powered by TanStack React Query.
+* **Responsive Design:** A mobile-first, sleek user interface built with the latest Tailwind CSS v4.
+
+## 🛠️ Tech Stack
+
+### Frontend
+* **Framework:** React 19 (via Vite)
+* **Styling:** Tailwind CSS v4
+* **State Management & Data Fetching:** TanStack React Query v5
+* **Routing:** React Router v7
+* **Notifications:** React Hot Toast
+* **HTTP Client:** Axios
+
+### Backend
+* **Runtime:** Node.js
+* **Framework:** Express.js v5
+* **Database:** MongoDB & Mongoose
+* **Authentication:** JWT (jsonwebtoken)
+* **Media Storage:** Cloudinary & Multer (memory storage)
+* **Email Service:** Nodemailer
+
+---
+
+## 💻 Local Development Setup
+
+Follow these steps to get the project running on your local machine.
+
+### Prerequisites
+* Node.js installed on your machine
+* MongoDB database (local or MongoDB Atlas)
+* Cloudinary Account (for image uploads)
+* Gmail Account with an App Password (for Nodemailer)
+* `pnpm` package manager (recommended based on project config)
+
+### 1. Clone the repository
+```bash
+git clone [https://github.com/YourUsername/TaskFlow.git](https://github.com/YourUsername/TaskFlow.git)
+cd TaskFlow
+```
+
+### 2. Backend Setup
+Navigate to the backend directory and install dependencies:
+
+```
+cd backend
+pnpm install
+```
+### 3. Create a .env file in the root of the backend directory and add the following variables:
+
+```
+PORT=3000
+FRONTEND_URL=Your-frontend-URL
+MONGODB_URL=your_mongodb_connection_string
+JWT_SECRET=your_super_secret_jwt_key
+
+# Cloudinary Setup for Profile Pictures
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+
+# Nodemailer Setup (e.g., Gmail App Password)
+EMAIL_USER=your_email@gmail.com
+EMAIL_PASS=your_app_password
+```
+
+### 4. Start the backend server:
+npm start / npm run dev
+
+### 5 Frontend Setup
+Open a new terminal, navigate to the frontend directory, and install dependencies:
+
+cd frontend
+pnpm install
+
+Create a .env file in the root of the frontend directory and add your backend URL:
+VITE_BACKEND_URL=Your-backend-URL
+
+npm run dev
+
+### Folder Structure
+
+Directory structure:
+└── midhunsreekkuttan-to-do-app/
+    ├── backend/
+    │   ├── package.json
+    │   ├── vercel.json
+    │   ├── config/
+    │   │   ├── cloudinary.js
+    │   │   ├── nodeMailer.js
+    │   │   └── templates.js
+    │   ├── controllers/
+    │   │   ├── taskController.js
+    │   │   └── userController.js
+    │   ├── data-base/
+    │   │   ├── connectBD.js
+    │   │   └── models/
+    │   │       ├── taskModel.js
+    │   │       └── userModel.js
+    │   ├── middleware/
+    │   │   ├── multer.js
+    │   │   └── userAuth.js
+    │   ├── routes/
+    │   │   ├── taskRoute.js
+    │   │   └── userRoute.js
+    │   └── src/
+    │       └── server.js
+    └── frontend/
+        ├── index.html
+        ├── package.json
+        ├── vercel.json
+        ├── vite.config.js
+        ├── .oxlintrc.json
+        └── src/
+            ├── App.jsx
+            ├── index.css
+            ├── main.jsx
+            ├── components/
+            │   ├── CreateTask.jsx
+            │   ├── Settings.jsx
+            │   ├── Sidebar.jsx
+            │   ├── TaskDetails.jsx
+            │   ├── TodayTasks.jsx
+            │   └── UpcomingTasks.jsx
+            ├── lib/
+            │   ├── AxiosInstance.js
+            │   ├── bottons.jsx
+            │   ├── Context.jsx
+            │   ├── Layout.jsx
+            │   └── LoadingScreen.jsx
+            └── pages/
+                ├── ForgotPassword.jsx
+                ├── Home.jsx
+                ├── Login.jsx
+                └── ResetPassword.jsx
+
+
+### Demo Images
+
+![Login-Page](login-page.png)
+
+![Today-Tasks](today-task.png)
+
+![Upcoming-Tasks](upcoming.png)
+
+![Settings](settings.png)
+
+### AUTHOR
+
+Name:     Midhun M
+Email:    midhunsreekkuttan987@gmail.com
+LinkedIn: www.linkedin.com/in/midhun-sreekkuttan
+GitHub:   https://github.com/MidhunSreekkuttan
+
+### 📄 License
+This project is licensed under the ISC License.
