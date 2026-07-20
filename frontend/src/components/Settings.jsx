@@ -106,7 +106,6 @@ const Settings = () => {
       setIsEditing(true);
     },
     onSuccess: (data) => {
-      toast.success("Profile updated", { position: "top-right" });
       setImageFile(null);
       if (data.user?.profilePic) setPreviewUrl(data.user.profilePic);
     },
