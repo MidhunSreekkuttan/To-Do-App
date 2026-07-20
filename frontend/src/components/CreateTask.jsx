@@ -198,7 +198,18 @@ const CreateTask = ({ onFormClose }) => {
             type="submit"
             className="mt-2 w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition-colors"
           >
-            Save Task
+            {handleSubmitMutation.isPending ? (
+              <div className="flex flex-row-reverse gap-3 justify-center items-center">
+                <div
+                  className='w-5 h-5 border-3 border-white border-t-transparent rounded-full animate-spin'
+                  role="status"
+                  aria-label="loading"
+                />
+                <p className="font-semibold text-white">Processing...</p>
+              </div>
+            ) : (
+              "Create Task"
+            )}
           </button>
 
         </form>
