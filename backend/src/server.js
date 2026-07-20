@@ -2,9 +2,9 @@ import express from 'express'
 import dotenv from 'dotenv/config'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
-import dataBase from './data-base/connectBD.js'
-import userRouter from './routes/userRoute.js'
-import taskRouter from './routes/taskRoute.js'
+import dataBase from '../data-base/connectBD.js'
+import userRouter from '../routes/userRoute.js'
+import taskRouter from '../routes/taskRoute.js'
 import dns from "dns"
 
 dns.setServers(["1.1.1.1", "8.8.8.8"]);
