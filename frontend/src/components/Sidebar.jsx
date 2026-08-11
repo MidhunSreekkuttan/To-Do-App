@@ -64,7 +64,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
 
             <button onClick={() => {
                 localStorage.removeItem("loginToken")
-                window.location.reload()
+                window.location.href('/')
             }}
                 className="mt-auto text-blue-600 text-lg font-bold bg-white py-3 px-4 rounded-lg w-full shadow-md hover:bg-gray-100 transition-colors shrink-0">
                 Logout
