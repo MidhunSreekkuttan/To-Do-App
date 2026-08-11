@@ -10,33 +10,27 @@ import ForgotPassword from "./pages/ForgotPassword"
 import ResetPassword from "./pages/ResetPassword"
 
 const App = () => {
-
   const { isLoading, userData } = useContext(Context)
 
   if (isLoading) return <LoadingScreen />
 
   return (
     <>
-
       <Toaster />
-
       <Routes>
-
         <Route path="/login" element={<Login />} />
         <Route path="/forgotPassword" element={<ForgotPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
 
         <Route path="/" element={<Layout />}>
-
           <Route index element={
-            userData && <Navigate to={`/${userData._id}`} replace />
+            userData
+              ? <Navigate to={`/${userData._id}`} replace />
+              : <Navigate to="/login" replace />
           } />
-
           <Route path=":userId" element={<Home />} />
-
         </Route>
       </Routes>
-
     </>
   )
 }
